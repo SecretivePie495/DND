@@ -778,41 +778,53 @@
       { src: "https://storage.googleapis.com/facelessbroll_website/DND_4.mp4", title: "Virtual Cosmos" }
     ];
 
-    /* =========================
-       POPULATE STRIPS
-       ========================= */
-    function populateStrip(trackEl, list) {
-      const all = [...list, ...list]; // duplicate for long scroll
+// Populate horizontal strips WITH per-video unmute buttons
+function populateStrip(trackEl, list) {
+  const all = [...list, ...list]; // duplicate for long scroll
 
-      all.forEach((videoObj) => {
-        const el = document.createElement('div');
-        el.className = 'video-item';
+  all.forEach(video => {
+    const id = `v_${Math.random().toString(36).substring(2, 9)}`;
 
-        el.innerHTML = `
-          <div class="relative w-full h-full">
-            <video
-              autoplay
-              muted
-              loop
-              playsinline
-              class="w-full h-full object-cover"
-            >
-              <source src="${videoObj.src}" type="video/mp4">
-            </video>
+    const el = document.createElement("div");
+    el.className = "video-item";
 
-            <!-- Per-card Unmute / Mute -->
-            <button
-              class="clip-mute-toggle absolute bottom-2 right-2 z-20 bg-black/70 text-white px-2.5 py-1 rounded-md text-[0.65rem] backdrop-blur-sm border border-white/20">
-              Unmute
-            </button>
+    el.innerHTML = `
+      <div class="relative w-full h-full">
+        <video id="${id}" autoplay muted loop playsinline class="w-full h-full object-cover">
+          <source src="${video.src}" type="video/mp4">
+        </video>
 
-            <div class="video-glow"></div>
-          </div>
-        `;
+        <!-- Per-video Mute/Unmute button -->
+        <button
+          class="unmute-btn absolute bottom-2 right-2 z-20 bg-black/60 text-white px-2 py-1 rounded-md text-[10px] border border-white/20"
+          data-video="${id}"
+        >
+          Unmute
+        </button>
 
-        trackEl.appendChild(el);
-      });
-    }
+        <div class="video-glow"></div>
+      </div>
+    `;
+
+    trackEl.appendChild(el);
+  });
+
+  // Enable per-video button logic
+  document.querySelectorAll(".unmute-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const vid = document.getElementById(btn.dataset.video);
+
+      vid.muted = !vid.muted;
+
+      if (!vid.muted) {
+        const p = vid.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+
+      btn.textContent = vid.muted ? "Unmute" : "Mute";
+    });
+  });
+}
 
     const additionalReelsTrack = document.getElementById('additionalReelsTrack');
     const moreReelsTrack       = document.getElementById('moreReelsTrack');
