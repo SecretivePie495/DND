@@ -753,94 +753,121 @@
       }
     });
 
-    // Parallax + title guard (harmless if elements not present)
-    window.addEventListener('scroll', () => {
-      const scrolled = window.pageYOffset;
-      const parallax = document.querySelector('.parallax-bg');
-      if (parallax) parallax.style.transform = \`translateY(\${scrolled * 0.5}px)\`;
-      const titleOverlay = document.querySelector('.title-overlay');
-      if (titleOverlay) {
-        const opacity = 1 - (scrolled / 300);
-        titleOverlay.style.opacity = Math.max(opacity, 0);
-      }
-    });
+      // Parallax + title guard (harmless if elements not present)
+  window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallax = document.querySelector('.parallax-bg');
+    if (parallax) parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+    const titleOverlay = document.querySelector('.title-overlay');
+    if (titleOverlay) {
+      const opacity = 1 - (scrolled / 300);
+      titleOverlay.style.opacity = Math.max(opacity, 0);
+    }
+  });
 
-    // Data for clips
-    const videoData4k = [
-      { src: "https://storage.googleapis.com/facelessbroll_website/DND_1.mp4", title: "Digital Dreamscape" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/DND_2.mp4", title: "Neural Pathways" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/DND_3.mp4", title: "Quantum Flux" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/DND_4.mp4", title: "AI Genesis" },
-    ];
+  // Data for clips – using real existing files
+  const videoData4k = [
+    { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C4dyNz9Nbdk_mute.mp4", title: "Digital Dreamscape" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/VID_20250905_221249_093.mp4", title: "Neural Pathways" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/318020133_244456238648375_4691320352052561618_n(1).mp4", title: "Quantum Flux" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/-237407181909170842.MP4", title: "Virtual Cosmos" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle135.mp4", title: "AI Genesis" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Auto885%202.mp4", title: "Data Streams" }
+  ];
 
-    const videoDataLuxury = [
-      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle563.mp4", title: "Luxury Dreams" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle265.mp4", title: "Elegant Vision" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle219.mp4", title: "Premium Glow" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle482.mp4", title: "Exclusive Escape" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C1k1CK0oive_mute.mp4", title: "Opulent Joy" },
-      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4", title: "Lavish Moments" }
-    ];
+  const videoDataLuxury = [
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle563.mp4", title: "Luxury Dreams" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle265.mp4", title: "Elegant Vision" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle219.mp4", title: "Premium Glow" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle482.mp4", title: "Exclusive Escape" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C1k1CK0oive_mute.mp4", title: "Opulent Joy" },
+    { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4", title: "Lavish Moments" }
+  ];
 
-    // Populate horizontal strips (with per-video mute toggle)
-    function populateStrip(trackEl, list) {
-      const all = [...list, ...list]; // duplicate for nice long scroll
-      all.forEach(videoData => {
-        const el = document.createElement('div');
-        el.className = 'video-item';
+  // Populate horizontal strips (with per-card Unmute / Mute button)
+  function populateStrip(trackEl, list) {
+    const all = [...list, ...list]; // duplicate so the strip feels long
+    all.forEach((videoObj, index) => {
+      const el = document.createElement('div');
+      el.className = 'video-item';
 
-        el.innerHTML = `
-          <video class="clip-video" muted loop playsinline>
-            <source src="${videoData.src}" type="video/mp4">
+      el.innerHTML = `
+        <div class="relative w-full h-full">
+          <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="w-full h-full object-cover"
+          >
+            <source src="${videoObj.src}" type="video/mp4">
           </video>
-          <button class="video-mute-btn">Unmute</button>
+
+          <button
+            class="clip-mute-toggle absolute bottom-2 right-2 z-20 bg-black/70 text-white px-2.5 py-1 rounded-md text-[0.65rem] backdrop-blur-sm border border-white/20">
+            Unmute
+          </button>
+
           <div class="video-glow"></div>
-        `;
+        </div>
+      `;
 
-        const video = el.querySelector('.clip-video');
-        const btn = el.querySelector('.video-mute-btn');
+      trackEl.appendChild(el);
+    });
+  }
 
-        // Try to autoplay muted
-        const playPromise = video.play();
-        if (playPromise && playPromise.catch) {
-          playPromise.catch(() => {});
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero video unmute / mute
+    const heroVideo = document.querySelector('#hero video');
+    const heroBtn = document.getElementById('unmuteBtn');
+
+    if (heroVideo && heroBtn) {
+      heroBtn.addEventListener('click', () => {
+        heroVideo.muted = !heroVideo.muted;
+
+        if (!heroVideo.muted) {
+          const playPromise = heroVideo.play();
+          if (playPromise && playPromise.catch) playPromise.catch(() => {});
         }
 
-        // Toggle mute / unmute on click
-        btn.addEventListener('click', () => {
-          const wasMuted = video.muted;
-
-          if (wasMuted) {
-            video.muted = false;
-            const p = video.play();
-            if (p && p.catch) p.catch(() => {});
-            btn.textContent = 'Mute';
-          } else {
-            video.muted = true;
-            btn.textContent = 'Unmute';
-          }
-        });
-
-        trackEl.appendChild(el);
+        heroBtn.textContent = heroVideo.muted ? 'Unmute' : 'Mute';
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const additionalReelsTrack = document.getElementById('additionalReelsTrack');
-      const moreReelsTrack = document.getElementById('moreReelsTrack');
-      if (additionalReelsTrack) populateStrip(additionalReelsTrack, videoData4k);
-      if (moreReelsTrack) populateStrip(moreReelsTrack, videoDataLuxury);
+    // Populate the horizontal strips
+    const additionalReelsTrack = document.getElementById('additionalReelsTrack');
+    const moreReelsTrack = document.getElementById('moreReelsTrack');
+    if (additionalReelsTrack) populateStrip(additionalReelsTrack, videoData4k);
+    if (moreReelsTrack)       populateStrip(moreReelsTrack, videoDataLuxury);
 
-      // Convert vertical wheel to horizontal inside strips
-      document.querySelectorAll('.horizontal-scroll-container').forEach(container => {
-        container.addEventListener('wheel', (e) => {
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            container.scrollLeft += e.deltaY;
-            e.preventDefault();
-          }
-        }, { passive: false });
-      });
+    // Per-card Unmute / Mute (event delegation for all clips)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.clip-mute-toggle');
+      if (!btn) return;
+
+      const container = btn.closest('.video-item');
+      if (!container) return;
+
+      const vid = container.querySelector('video');
+      if (!vid) return;
+
+      vid.muted = !vid.muted;
+
+      if (!vid.muted) {
+        const playPromise = vid.play();
+        if (playPromise && playPromise.catch) playPromise.catch(() => {});
+      }
+
+      btn.textContent = vid.muted ? 'Unmute' : 'Mute';
     });
-  </script>
-</body>
-</html>
+
+    // Convert vertical wheel to horizontal inside strips
+    document.querySelectorAll('.horizontal-scroll-container').forEach(container => {
+      container.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          container.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+    });
+  });
