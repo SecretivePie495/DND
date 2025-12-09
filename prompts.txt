@@ -1,0 +1,4 @@
+I want watch showreel to say watch demo where it is a VSL video 
+When Watch Showreel is clicked I need this to go go down to a video i will import
+In the demo Video section  In source src code i need the video to pup on thats in the main depostiory AI_automation/videos
+The video portion still isn't coming up. I'm going to use a youtue link make this able so It will work
