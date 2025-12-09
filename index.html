@@ -173,74 +173,81 @@
         0 0 40px rgba(155, 92, 255, 0.4);
     }
 
-    /* Clips / reels strips */
+    /* ============================
+       Horizontal scroll video strips
+       (adapted to DND colors)
+       ============================ */
     .horizontal-scroll-container {
+      width: 100%;
       overflow-x: auto;
-      overflow-y: hidden;
+      overflow-y: visible;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+      padding: 0 0 1.5rem 0;
+      mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
     }
 
-    .horizontal-scroll-container::-webkit-scrollbar {
-      height: 6px;
-    }
-    .horizontal-scroll-container::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.4);
-      border-radius: 999px;
-    }
-
-    .clips-track {
+    .horizontal-scroll-track {
       display: flex;
-      gap: 0.75rem;
-      padding-bottom: 0.25rem;
+      gap: 1.25rem;
     }
 
     .video-item {
-      position: relative;
-      min-width: 180px;
-      max-width: 220px;
-      aspect-ratio: 9 / 16;
+      flex: 0 0 auto;
+      width: 220px;
+      height: 390px;
       border-radius: 1rem;
       overflow: hidden;
+      position: relative;
       background: #020617;
-      border: 1px solid rgba(148, 163, 184, 0.35);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow:
+        0 0 0 1px rgba(148, 163, 184, 0.2),
+        0 10px 30px rgba(15, 23, 42, 0.8);
+      scroll-snap-align: start;
     }
 
     .video-item video {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      filter: contrast(1.05) brightness(.95) saturate(1.1);
+    }
+
+    .video-item:hover {
+      transform: translateY(-6px) scale(1.05);
+      box-shadow:
+        0 0 0 1px rgba(155, 92, 255, 0.5),
+        0 20px 40px rgba(15, 23, 42, 1),
+        0 0 60px rgba(70, 245, 255, 0.2);
     }
 
     .video-glow {
       position: absolute;
       inset: 0;
+      background: radial-gradient(circle at center,
+        transparent 45%,
+        rgba(155, 92, 255, 0.18));
+      mix-blend-mode: screen;
       pointer-events: none;
-      box-shadow: 0 0 40px rgba(148, 163, 184, 0.3);
     }
 
-    .mute-toggle {
-      position: absolute;
-      bottom: 0.4rem;
-      right: 0.4rem;
-      padding: 0.25rem 0.55rem;
+    /* Optional subtle scrollbar styling */
+    .horizontal-scroll-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-thumb {
+      background: rgba(30, 64, 175, 0.5);
       border-radius: 999px;
-      border: 1px solid rgba(248, 250, 252, 0.35);
-      background: rgba(15, 23, 42, 0.75);
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
     }
   </style>
 </head>
 <body class="text-slate-100">
   <!-- Moving 3D-ish background -->
-  <div class="bg-orbit parallax-bg">
+  <div class="bg-orbit">
     <div class="bg-orbit__blob -top-40 -left-40"></div>
     <div class="bg-orbit__blob bg-orbit__blob--2"></div>
   </div>
@@ -259,9 +266,9 @@
         </div>
         <nav class="hidden md:flex items-center gap-6 text-xs text-slate-300">
           <a href="#music" class="hover:text-white transition">Music</a>
+          <a href="#clips" class="hover:text-white transition">Clips</a>
           <a href="#tour" class="hover:text-white transition">Tour</a>
           <a href="#visuals" class="hover:text-white transition">Visuals</a>
-          <a href="#clips" class="hover:text-white transition">Clips</a>
           <a href="#contact" class="hover:text-white transition">Contact</a>
         </nav>
         <a href="#contact"
@@ -279,7 +286,7 @@
         <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-[1.4fr,1fr] gap-10 items-center">
 
           <!-- LEFT SIDE TEXT -->
-          <div class="space-y-8 title-overlay">
+          <div class="space-y-8">
             <div class="inline-flex items-center gap-2 pill px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-slate-200/90">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
               <span>New single “NEON VEINS” out now</span>
@@ -346,7 +353,6 @@
 
               <div class="aspect-[4/5] rounded-2xl border border-slate-700/60 overflow-hidden relative bg-black">
                 <video
-                  id="heroVideo"
                   class="absolute inset-0 w-full h-full object-cover"
                   autoplay
                   muted
@@ -354,9 +360,6 @@
                   playsinline
                 >
                   <source src="https://storage.googleapis.com/facelessbroll_website/DND.mp4" type="video/mp4" />
-                  <!-- alt option:
-                  <source src="https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4" type="video/mp4" />
-                  -->
                   Your browser does not support the video tag.
                 </video>
 
@@ -403,7 +406,7 @@
               <span class="tag-chip px-3 py-1">Spotify</span>
               <span class="tag-chip px-3 py-1">Apple Music</span>
               <span class="tag-chip px-3 py-1">SoundCloud</span>
-              <span class="tag-chip px-3 py-1">Bandcamp</span>
+              <span class="tag-chip px-3 py-1">YouTube Music</span>
             </div>
           </div>
 
@@ -480,6 +483,100 @@
         </div>
       </section>
 
+      <!-- CLIPS / REELS SECTION (HORIZONTAL STRIPS) -->
+      <section id="clips" class="py-14 border-t border-slate-800/60 bg-black/40">
+        <div class="max-w-6xl mx-auto px-4 space-y-8">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p class="section-title text-slate-400">Clips</p>
+              <h2 class="text-2xl md:text-3xl font-semibold">Signature reels</h2>
+              <p class="mt-2 text-sm text-slate-300 max-w-xl">
+                Scroll through looping visuals pulled from DND’s live sets and visual packs.
+              </p>
+            </div>
+          </div>
+
+          <!-- Strip 1: 4K / Digital -->
+          <div class="space-y-2">
+            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">4K / Digital</p>
+            <div class="horizontal-scroll-container">
+              <div class="horizontal-scroll-track" id="additionalReelsTrack">
+                <!-- JS will inject .video-item elements here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Strip 2: Luxury -->
+          <div class="space-y-2">
+            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">Luxury</p>
+            <div class="horizontal-scroll-container">
+              <div class="horizontal-scroll-track" id="moreReelsTrack">
+                <!-- JS will inject .video-item elements here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOUR SECTION -->
+      <section id="tour" class="py-14">
+        <div class="max-w-6xl mx-auto px-4 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p class="section-title text-slate-400">Tour</p>
+              <h2 class="text-2xl md:text-3xl font-semibold">Upcoming shows</h2>
+              <p class="mt-2 text-sm text-slate-300 max-w-lg">
+                Clubs, warehouses, and festivals — immersive AV sets designed for full-system sound.
+              </p>
+            </div>
+            <a href="#contact" class="btn-outline px-4 py-2 text-xs">
+              Booking & press inquiries →
+            </a>
+          </div>
+
+          <div class="glass overflow-hidden">
+            <div class="divide-y divide-slate-800 text-sm">
+              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
+                <div class="flex items-center gap-4">
+                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Feb 21</span>
+                  <div>
+                    <div class="font-medium">Dallas, TX · Deep Void Club</div>
+                    <div class="text-xs text-slate-400">“Neon Veins” live AV set</div>
+                  </div>
+                </div>
+                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
+                  Tickets
+                </button>
+              </div>
+              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
+                <div class="flex items-center gap-4">
+                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Mar 08</span>
+                  <div>
+                    <div class="font-medium">Los Angeles, CA · Terminal Echo</div>
+                    <div class="text-xs text-slate-400">w/ Ghostline, KAIYA</div>
+                  </div>
+                </div>
+                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
+                  Tickets
+                </button>
+              </div>
+              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
+                <div class="flex items-center gap-4">
+                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Apr 19</span>
+                  <div>
+                    <div class="font-medium">Berlin, DE · Nachtfeld</div>
+                    <div class="text-xs text-slate-400">Festival · Main room</div>
+                  </div>
+                </div>
+                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
+                  Tickets
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- VISUALS / GALLERY -->
       <section id="visuals" class="py-14 border-t border-slate-800/60 bg-black/40">
         <div class="max-w-6xl mx-auto px-4 space-y-6">
@@ -527,37 +624,6 @@
                   Soft, blooming gradients for smaller rooms and late-night radio streams.
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CLIPS / REELS SECTION -->
-      <section id="clips" class="py-14 border-t border-slate-800/60 bg-black/30">
-        <div class="max-w-6xl mx-auto px-4 space-y-6">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <p class="section-title text-slate-400">Clips</p>
-              <h2 class="text-2xl md:text-3xl font-semibold">Signature reels</h2>
-              <p class="mt-2 text-sm text-slate-300 max-w-xl">
-                Scroll through looping visuals — tap sound on any clip to unmute and hear the energy.
-              </p>
-            </div>
-          </div>
-
-          <!-- 4K / DIGITAL STRIP -->
-          <div class="space-y-2">
-            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">4K / Digital</p>
-            <div class="horizontal-scroll-container">
-              <div id="additionalReelsTrack" class="clips-track"></div>
-            </div>
-          </div>
-
-          <!-- LUXURY STRIP -->
-          <div class="space-y-2">
-            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">Luxury</p>
-            <div class="horizontal-scroll-container">
-              <div id="moreReelsTrack" class="clips-track"></div>
             </div>
           </div>
         </div>
@@ -641,19 +707,38 @@
 
   <!-- Scripts -->
   <script>
-    // Parallax + title guard
+    // Hero video unmute / mute
+    document.addEventListener('DOMContentLoaded', () => {
+      const video = document.querySelector('#hero video');
+      const btn = document.getElementById('unmuteBtn');
+
+      if (video && btn) {
+        btn.addEventListener('click', () => {
+          video.muted = !video.muted;
+
+          if (!video.muted) {
+            const playPromise = video.play();
+            if (playPromise && playPromise.catch) playPromise.catch(() => {});
+          }
+
+          btn.textContent = video.muted ? 'Unmute' : 'Mute';
+        });
+      }
+    });
+
+    // Parallax + title guard (harmless if elements not present)
     window.addEventListener('scroll', () => {
       const scrolled = window.pageYOffset;
       const parallax = document.querySelector('.parallax-bg');
-      if (parallax) parallax.style.transform = \`translateY(\${scrolled * 0.5}px)\`;
+      if (parallax) parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
       const titleOverlay = document.querySelector('.title-overlay');
-      if (titleOverlay){
+      if (titleOverlay) {
         const opacity = 1 - (scrolled / 300);
         titleOverlay.style.opacity = Math.max(opacity, 0);
       }
     });
 
-    // Data
+    // Data for clips
     const videoData4k = [
       { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C4dyNz9Nbdk_mute.mp4", title: "Digital Dreamscape" },
       { src: "https://storage.googleapis.com/facelessbroll_website/VID_20250905_221249_093.mp4", title: "Neural Pathways" },
@@ -662,6 +747,7 @@
       { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle135.mp4", title: "AI Genesis" },
       { src: "https://storage.googleapis.com/facelessbroll_website/Auto885%202.mp4", title: "Data Streams" }
     ];
+
     const videoDataLuxury = [
       { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle563.mp4", title: "Luxury Dreams" },
       { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle265.mp4", title: "Elegant Vision" },
@@ -671,8 +757,9 @@
       { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4", title: "Lavish Moments" }
     ];
 
+    // Populate horizontal strips
     function populateStrip(trackEl, list) {
-      const all = [...list, ...list]; // duplicate for length
+      const all = [...list, ...list]; // duplicate for nice long scroll
       all.forEach(video => {
         const el = document.createElement('div');
         el.className = 'video-item';
@@ -680,59 +767,26 @@
           <video autoplay muted loop playsinline>
             <source src="${video.src}" type="video/mp4">
           </video>
-          <button class="mute-toggle">
-            <span class="icon">🔇</span>
-            <span>Sound</span>
-          </button>
           <div class="video-glow"></div>
         `;
         trackEl.appendChild(el);
-
-        const vid = el.querySelector('video');
-        const btn = el.querySelector('.mute-toggle');
-
-        btn.addEventListener('click', () => {
-          vid.muted = !vid.muted;
-          if (!vid.muted) {
-            const p = vid.play();
-            if (p && p.catch) p.catch(() => {});
-          }
-          const iconSpan = btn.querySelector('.icon');
-          iconSpan.textContent = vid.muted ? '🔇' : '🔊';
-        });
       });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Hero mute/unmute
-      const heroVideo = document.getElementById('heroVideo');
-      const heroBtn = document.getElementById('unmuteBtn');
-
-      if (heroVideo && heroBtn) {
-        heroBtn.addEventListener('click', () => {
-          heroVideo.muted = !heroVideo.muted;
-          if (!heroVideo.muted) {
-            const playPromise = heroVideo.play();
-            if (playPromise && playPromise.catch) playPromise.catch(() => {});
-          }
-          heroBtn.textContent = heroVideo.muted ? 'Unmute' : 'Mute';
-        });
-      }
-
-      // Populate strips
       const additionalReelsTrack = document.getElementById('additionalReelsTrack');
       const moreReelsTrack = document.getElementById('moreReelsTrack');
       if (additionalReelsTrack) populateStrip(additionalReelsTrack, videoData4k);
-      if (moreReelsTrack)       populateStrip(moreReelsTrack, videoDataLuxury);
+      if (moreReelsTrack) populateStrip(moreReelsTrack, videoDataLuxury);
 
-      // Convert vertical wheel to horizontal when hovering a strip (desktop nicety)
-      document.querySelectorAll('.horizontal-scroll-container').forEach(container=>{
-        container.addEventListener('wheel', (e)=>{
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      // Convert vertical wheel to horizontal inside strips
+      document.querySelectorAll('.horizontal-scroll-container').forEach(container => {
+        container.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
             container.scrollLeft += e.deltaY;
             e.preventDefault();
           }
-        }, { passive:false });
+        }, { passive: false });
       });
     });
   </script>
