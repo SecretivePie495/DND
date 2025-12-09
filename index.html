@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DND Music— Official Site</title>
+  <title>DND Music — Official Site</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -172,11 +172,75 @@
         0 24px 60px rgba(15, 23, 42, 0.9),
         0 0 40px rgba(155, 92, 255, 0.4);
     }
+
+    /* Clips / reels strips */
+    .horizontal-scroll-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+    }
+
+    .horizontal-scroll-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 999px;
+    }
+
+    .clips-track {
+      display: flex;
+      gap: 0.75rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .video-item {
+      position: relative;
+      min-width: 180px;
+      max-width: 220px;
+      aspect-ratio: 9 / 16;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .video-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: 0 0 40px rgba(148, 163, 184, 0.3);
+    }
+
+    .mute-toggle {
+      position: absolute;
+      bottom: 0.4rem;
+      right: 0.4rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.35);
+      background: rgba(15, 23, 42, 0.75);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
   </style>
 </head>
 <body class="text-slate-100">
   <!-- Moving 3D-ish background -->
-  <div class="bg-orbit">
+  <div class="bg-orbit parallax-bg">
     <div class="bg-orbit__blob -top-40 -left-40"></div>
     <div class="bg-orbit__blob bg-orbit__blob--2"></div>
   </div>
@@ -191,12 +255,13 @@
           <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[var(--accent-2)] via-[var(--accent)] to-fuchsia-500 flex items-center justify-center text-xs font-bold tracking-[0.2em]">
             NE
           </div>
-          <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-slate-300">Nova Echo</span>
+          <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-slate-300">DND Music</span>
         </div>
         <nav class="hidden md:flex items-center gap-6 text-xs text-slate-300">
           <a href="#music" class="hover:text-white transition">Music</a>
           <a href="#tour" class="hover:text-white transition">Tour</a>
           <a href="#visuals" class="hover:text-white transition">Visuals</a>
+          <a href="#clips" class="hover:text-white transition">Clips</a>
           <a href="#contact" class="hover:text-white transition">Contact</a>
         </nav>
         <a href="#contact"
@@ -214,7 +279,7 @@
         <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-[1.4fr,1fr] gap-10 items-center">
 
           <!-- LEFT SIDE TEXT -->
-          <div class="space-y-8">
+          <div class="space-y-8 title-overlay">
             <div class="inline-flex items-center gap-2 pill px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-slate-200/90">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
               <span>New single “NEON VEINS” out now</span>
@@ -229,7 +294,7 @@
                 for the late-night mind.
               </h1>
               <p class="text-sm md:text-base text-slate-300 max-w-xl">
-                NOVA ECHO blends analog synths, glitchy percussion, and cinematic atmospheres
+                DND Music blends analog synths, glitchy percussion, and cinematic atmospheres
                 into a live experience built for dark rooms, bright LEDs, and endless nights.
               </p>
             </div>
@@ -259,7 +324,7 @@
               </div>
               <div class="flex flex-col text-[0.7rem] leading-tight text-slate-300">
                 <span class="uppercase tracking-[0.2em] text-slate-400">Now playing</span>
-                <span class="font-medium text-slate-100">NEON VEINS · Nova Echo</span>
+                <span class="font-medium text-slate-100">NEON VEINS · DND Music</span>
               </div>
             </div>
           </div>
@@ -281,15 +346,15 @@
 
               <div class="aspect-[4/5] rounded-2xl border border-slate-700/60 overflow-hidden relative bg-black">
                 <video
+                  id="heroVideo"
                   class="absolute inset-0 w-full h-full object-cover"
                   autoplay
                   muted
                   loop
                   playsinline
                 >
-                  <!-- Swap video source here if you want -->
                   <source src="https://storage.googleapis.com/facelessbroll_website/DND.mp4" type="video/mp4" />
-                  <!-- Or use this instead:
+                  <!-- alt option:
                   <source src="https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4" type="video/mp4" />
                   -->
                   Your browser does not support the video tag.
@@ -330,7 +395,7 @@
               <p class="section-title text-slate-400">Music</p>
               <h2 class="text-2xl md:text-3xl font-semibold">Latest releases</h2>
               <p class="mt-2 text-sm text-slate-300 max-w-lg">
-                Stream Nova Echo across every major platform — from late-night headphone sessions
+                Stream DND Music across every major platform — from late-night headphone sessions
                 to main-stage sound systems.
               </p>
             </div>
@@ -415,65 +480,6 @@
         </div>
       </section>
 
-      <!-- TOUR SECTION -->
-      <section id="tour" class="py-14">
-        <div class="max-w-6xl mx-auto px-4 space-y-6">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <p class="section-title text-slate-400">Tour</p>
-              <h2 class="text-2xl md:text-3xl font-semibold">Upcoming shows</h2>
-              <p class="mt-2 text-sm text-slate-300 max-w-lg">
-                Clubs, warehouses, and festivals — immersive AV sets designed for full-system sound.
-              </p>
-            </div>
-            <a href="#contact" class="btn-outline px-4 py-2 text-xs">
-              Booking & press inquiries →
-            </a>
-          </div>
-
-          <div class="glass overflow-hidden">
-            <div class="divide-y divide-slate-800 text-sm">
-              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
-                <div class="flex items-center gap-4">
-                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Feb 21</span>
-                  <div>
-                    <div class="font-medium">Dallas, TX · Deep Void Club</div>
-                    <div class="text-xs text-slate-400">“Neon Veins” live AV set</div>
-                  </div>
-                </div>
-                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
-                  Tickets
-                </button>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
-                <div class="flex items-center gap-4">
-                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Mar 08</span>
-                  <div>
-                    <div class="font-medium">Los Angeles, CA · Terminal Echo</div>
-                    <div class="text-xs text-slate-400">w/ Ghostline, KAIYA</div>
-                  </div>
-                </div>
-                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
-                  Tickets
-                </button>
-              </div>
-              <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0 justify-between px-5 py-4">
-                <div class="flex items-center gap-4">
-                  <span class="text-xs uppercase tracking-[0.2em] text-slate-400">Apr 19</span>
-                  <div>
-                    <div class="font-medium">Berlin, DE · Nachtfeld</div>
-                    <div class="text-xs text-slate-400">Festival · Main room</div>
-                  </div>
-                </div>
-                <button class="btn-outline px-3 py-1.5 text-xs mt-1 md:mt-0">
-                  Tickets
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- VISUALS / GALLERY -->
       <section id="visuals" class="py-14 border-t border-slate-800/60 bg-black/40">
         <div class="max-w-6xl mx-auto px-4 space-y-6">
@@ -521,6 +527,37 @@
                   Soft, blooming gradients for smaller rooms and late-night radio streams.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CLIPS / REELS SECTION -->
+      <section id="clips" class="py-14 border-t border-slate-800/60 bg-black/30">
+        <div class="max-w-6xl mx-auto px-4 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p class="section-title text-slate-400">Clips</p>
+              <h2 class="text-2xl md:text-3xl font-semibold">Signature reels</h2>
+              <p class="mt-2 text-sm text-slate-300 max-w-xl">
+                Scroll through looping visuals — tap sound on any clip to unmute and hear the energy.
+              </p>
+            </div>
+          </div>
+
+          <!-- 4K / DIGITAL STRIP -->
+          <div class="space-y-2">
+            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">4K / Digital</p>
+            <div class="horizontal-scroll-container">
+              <div id="additionalReelsTrack" class="clips-track"></div>
+            </div>
+          </div>
+
+          <!-- LUXURY STRIP -->
+          <div class="space-y-2">
+            <p class="text-[0.75rem] uppercase tracking-[0.18em] text-slate-400">Luxury</p>
+            <div class="horizontal-scroll-container">
+              <div id="moreReelsTrack" class="clips-track"></div>
             </div>
           </div>
         </div>
@@ -591,7 +628,7 @@
     <!-- FOOTER -->
     <footer class="border-t border-slate-800/80 bg-black/60">
       <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[0.7rem] text-slate-500">
-        <span>© 2025 NOVA ECHO. All rights reserved.</span>
+        <span>© 2025 DND Music. All rights reserved.</span>
         <div class="flex items-center gap-4">
           <a href="#" class="hover:text-slate-300">Instagram</a>
           <a href="#" class="hover:text-slate-300">Spotify</a>
@@ -602,26 +639,100 @@
     </footer>
   </div>
 
-  <!-- Unmute / Mute script -->
+  <!-- Scripts -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const video = document.querySelector('#hero video');
-      const btn = document.getElementById('unmuteBtn');
+    // Parallax + title guard
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallax = document.querySelector('.parallax-bg');
+      if (parallax) parallax.style.transform = \`translateY(\${scrolled * 0.5}px)\`;
+      const titleOverlay = document.querySelector('.title-overlay');
+      if (titleOverlay){
+        const opacity = 1 - (scrolled / 300);
+        titleOverlay.style.opacity = Math.max(opacity, 0);
+      }
+    });
 
-      if (!video || !btn) return;
+    // Data
+    const videoData4k = [
+      { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C4dyNz9Nbdk_mute.mp4", title: "Digital Dreamscape" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/VID_20250905_221249_093.mp4", title: "Neural Pathways" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/318020133_244456238648375_4691320352052561618_n(1).mp4", title: "Quantum Flux" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/-237407181909170842.MP4", title: "Virtual Cosmos" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle135.mp4", title: "AI Genesis" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Auto885%202.mp4", title: "Data Streams" }
+    ];
+    const videoDataLuxury = [
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle563.mp4", title: "Luxury Dreams" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle265.mp4", title: "Elegant Vision" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle219.mp4", title: "Premium Glow" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle482.mp4", title: "Exclusive Escape" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/instagram_C1k1CK0oive_mute.mp4", title: "Opulent Joy" },
+      { src: "https://storage.googleapis.com/facelessbroll_website/Lifestyle554.mp4", title: "Lavish Moments" }
+    ];
 
-      btn.addEventListener('click', () => {
-        video.muted = !video.muted;
+    function populateStrip(trackEl, list) {
+      const all = [...list, ...list]; // duplicate for length
+      all.forEach(video => {
+        const el = document.createElement('div');
+        el.className = 'video-item';
+        el.innerHTML = `
+          <video autoplay muted loop playsinline>
+            <source src="${video.src}" type="video/mp4">
+          </video>
+          <button class="mute-toggle">
+            <span class="icon">🔇</span>
+            <span>Sound</span>
+          </button>
+          <div class="video-glow"></div>
+        `;
+        trackEl.appendChild(el);
 
-        // If we just unmuted, make sure it’s playing
-        if (!video.muted) {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {});
+        const vid = el.querySelector('video');
+        const btn = el.querySelector('.mute-toggle');
+
+        btn.addEventListener('click', () => {
+          vid.muted = !vid.muted;
+          if (!vid.muted) {
+            const p = vid.play();
+            if (p && p.catch) p.catch(() => {});
           }
-        }
+          const iconSpan = btn.querySelector('.icon');
+          iconSpan.textContent = vid.muted ? '🔇' : '🔊';
+        });
+      });
+    }
 
-        btn.textContent = video.muted ? 'Unmute' : 'Mute';
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hero mute/unmute
+      const heroVideo = document.getElementById('heroVideo');
+      const heroBtn = document.getElementById('unmuteBtn');
+
+      if (heroVideo && heroBtn) {
+        heroBtn.addEventListener('click', () => {
+          heroVideo.muted = !heroVideo.muted;
+          if (!heroVideo.muted) {
+            const playPromise = heroVideo.play();
+            if (playPromise && playPromise.catch) playPromise.catch(() => {});
+          }
+          heroBtn.textContent = heroVideo.muted ? 'Unmute' : 'Mute';
+        });
+      }
+
+      // Populate strips
+      const additionalReelsTrack = document.getElementById('additionalReelsTrack');
+      const moreReelsTrack = document.getElementById('moreReelsTrack');
+      if (additionalReelsTrack) populateStrip(additionalReelsTrack, videoData4k);
+      if (moreReelsTrack)       populateStrip(moreReelsTrack, videoDataLuxury);
+
+      // Convert vertical wheel to horizontal when hovering a strip (desktop nicety)
+      document.querySelectorAll('.horizontal-scroll-container').forEach(container=>{
+        container.addEventListener('wheel', (e)=>{
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+            container.scrollLeft += e.deltaY;
+            e.preventDefault();
+          }
+        }, { passive:false });
       });
     });
   </script>
